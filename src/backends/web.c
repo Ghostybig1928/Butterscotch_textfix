@@ -164,6 +164,15 @@ void onKeyDown(int keyCode) {
     gInputQueue[entryIndex].down = true;
 }
 
+void onCharacter(int character) {
+    if (gInputCount == MAX_KEY_QUEUE)
+        return;
+
+    int entryIndex = gInputCount++;
+    gInputQueue[entryIndex].inputType = INPUTTYPE_CHAR;
+    gInputQueue[entryIndex].key = character;
+    gInputQueue[entryIndex].down = true;
+}
 void onMouseUp(int button) {
     if (gInputCount == MAX_KEY_QUEUE)
         return;
@@ -262,13 +271,17 @@ bool platformHandleEvents(void) {
                 }
                 break;
             }
+            case INPUTTYPE_CHAR: {
+                RunnerKeyboard_onCharacter(gRunner->keyboard, (unsigned int) entry.key);
+                break;
+            }
         }
 
         inputIndex++;
     }
 
     gInputCount = 0;
-    
+
     return gRequestedRunnerExit;
 }
 
